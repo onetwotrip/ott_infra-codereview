@@ -10,3 +10,4 @@ spec/reports
 tmp
 *.swp
 *.swo
+rspec.xml
