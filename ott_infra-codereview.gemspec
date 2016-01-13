@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~>3.4.0"
   spec.add_development_dependency "rspec_junit_formatter", "~>0.2.3"
+  spec.add_development_dependency "simplecov", "~>0.11.1"
 end
