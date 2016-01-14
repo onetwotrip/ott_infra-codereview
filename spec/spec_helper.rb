@@ -23,6 +23,7 @@ SimpleCov.start do
 end
 
 require "ott_infra/codereview"
+require "ott_infra/git"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
