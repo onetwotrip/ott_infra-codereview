@@ -37,8 +37,21 @@ module OttInfra
       reviewers
     end
 
+    def self.get_author
+      { :name => @@g.log.first.author.name,
+        :email => @@g.log.first.author.email}
+    end
+
     def self.get_diff
       @@g.lib.diff_full( @@g.log.first.parent, @@g.log.first )
+    end
+
+    def self.get_review_info
+      {
+        :author => get_author,
+        :reviewers => get_reviewers,
+        :diff => get_diff
+      }
     end
 
     # Module variables
