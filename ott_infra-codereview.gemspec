@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{OTT Infra CodeReview gem.}
   spec.description   = %q{Infrastructure libs for codereview notification.}
-  spec.homepage      = "https://no.url"
+  spec.homepage      = "https://www.onetwotrip.com"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
@@ -31,5 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~>3.4.0"
   spec.add_development_dependency "rspec_junit_formatter", "~>0.2.3"
   spec.add_development_dependency "simplecov", "~>0.11.1"
-  spec.add_development_dependency "git", "~>1.2.9.1"
+  spec.add_dependency "git", "~>1.2.9.1"
 end
