@@ -14,19 +14,20 @@ describe OttInfra::CodeReview do
   it ".run is exist" do
     expect( OttInfra::CodeReview.run )
   end
+
   it ".get_last_changes returns last commit changes" do
     expected_array = `git diff-tree --name-only -r 'HEAD^..HEAD'`.split
-    expect( OttInfra::CodeReview.get_last_changes).to match_array(expected_array)
-  end
-  it ".find_git_root returns git root path" do
-    expected_string = `git rev-parse --show-toplevel`.chomp
-    expect( OttInfra::CodeReview.find_git_root         ).to eq(expected_string)
-    expect( OttInfra::CodeReview.find_git_root('lib/') ).to eq(expected_string)
-    expect( OttInfra::CodeReview.find_git_root('')     ).to eq(expected_string)
-    expect( OttInfra::CodeReview.find_git_root('./')   ).to eq(expected_string)
-    expect( OttInfra::CodeReview.find_git_root('/tmp') ).to be nil
+    expect( OttInfra::CodeReview.run.get_last_changes).to match_array(expected_array)
   end
 
+  it ".find_git_root returns git root path" do
+    expected_string = `git rev-parse --show-toplevel`.chomp
+    expect( OttInfra::CodeReview.run.find_git_root         ).to eq(expected_string)
+    expect( OttInfra::CodeReview.run.find_git_root('lib/') ).to eq(expected_string)
+    expect( OttInfra::CodeReview.run.find_git_root('')     ).to eq(expected_string)
+    expect( OttInfra::CodeReview.run.find_git_root('./')   ).to eq(expected_string)
+    expect( OttInfra::CodeReview.run.find_git_root('/tmp') ).to be nil
+  end
 
   it ".get_file_attrs returns attributes" do
     file = 'lib.rb'
@@ -45,7 +46,7 @@ describe OttInfra::CodeReview do
       allow_any_instance_of(Git::Lib).to receive(:checkattr)
                                          .with( file )
                                          .and_return( stub )
-      expect( OttInfra::CodeReview.get_file_attrs(file, :attr => owner_key) ).to eq( expected )
+      expect( OttInfra::CodeReview.run.get_file_attrs(file, :attr => owner_key) ).to eq( expected )
     end
   end
 
@@ -56,15 +57,15 @@ describe OttInfra::CodeReview do
     }
     expected_array = ['mail@ex.com','mail_2@ex.com']
 
-    allow(OttInfra::CodeReview).to receive(:get_last_changes)
+    allow_any_instance_of(OttInfra::CodeReview).to receive(:get_last_changes)
                                    .and_return( stub[:get_last_changes] )
     Hash[stub[:get_last_changes].zip(stub[:get_file_attrs])].each do |file, reviewer|
-      allow(OttInfra::CodeReview).to receive(:get_file_attrs)
+      allow_any_instance_of(OttInfra::CodeReview).to receive(:get_file_attrs)
                                      .with( file, :attr => 'owner.mail' )
                                      .and_return( reviewer )
     end
 
-    expect( OttInfra::CodeReview.get_reviewers ).to match_array( expected_array )
+    expect( OttInfra::CodeReview.run.get_reviewers ).to match_array( expected_array )
   end
 
   it ".get_review_info returns all git data" do
@@ -72,10 +73,10 @@ describe OttInfra::CodeReview do
       :get_last_changes => ['lib/module.rb'],
       :get_file_attrs   => ['reviewer@test.com']
     }
-    allow(OttInfra::CodeReview).to receive(:get_last_changes)
+    allow_any_instance_of(OttInfra::CodeReview).to receive(:get_last_changes)
                                    .and_return( stub[:get_last_changes] )
     Hash[stub[:get_last_changes].zip(stub[:get_file_attrs])].each do |file, reviewer|
-      allow(OttInfra::CodeReview).to receive(:get_file_attrs)
+      allow_any_instance_of(OttInfra::CodeReview).to receive(:get_file_attrs)
                                      .with( file, :attr => 'owner.mail' )
                                      .and_return( reviewer )
     end
@@ -93,6 +94,6 @@ describe OttInfra::CodeReview do
       :reviewers => ['reviewer@test.com'],
       :diff => "Diff_Text"
     }
-    expect( OttInfra::CodeReview.get_review_info ).to include( expected_hash )
+    expect( OttInfra::CodeReview.run.get_review_info ).to include( expected_hash )
   end
 end
