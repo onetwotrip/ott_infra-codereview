@@ -8,92 +8,83 @@ describe Git::Lib do
   end
 end
 
+describe OttInfra::SendMail do
+  ENV["SENDGRID_USER"] = 'sendgrid_user'
+  ENV["SENDGRID_PASS"] = 'sendgrid_pass'
+  ENV["SENDGRID_FROM"] = 'sendgrid_from'
+  it "check config instance variable" do
+    expect( OttInfra::SendMail.new.config.sendgrid.user ).to match( "sendgrid_user" )
+    expect( OttInfra::SendMail.new.config.sendgrid.pass ).to match( "sendgrid_pass" )
+    expect( OttInfra::SendMail.new.config.sendgrid.from ).to match( "sendgrid_from" )
+  end
+end
+
 describe OttInfra::CodeReview do
   owner_key = 'owner.mail'
-
-  it ".run is exist" do
-    expect( OttInfra::CodeReview.run )
-  end
-
-  it ".get_last_changes returns last commit changes" do
-    expected_array = `git diff-tree --name-only -r 'HEAD^..HEAD'`.split
-    expect( OttInfra::CodeReview.run.get_last_changes).to match_array(expected_array)
-  end
-
-  it ".find_git_root returns git root path" do
-    expected_string = `git rev-parse --show-toplevel`.chomp
-    expect( OttInfra::CodeReview.run.find_git_root         ).to eq(expected_string)
-    expect( OttInfra::CodeReview.run.find_git_root('lib/') ).to eq(expected_string)
-    expect( OttInfra::CodeReview.run.find_git_root('')     ).to eq(expected_string)
-    expect( OttInfra::CodeReview.run.find_git_root('./')   ).to eq(expected_string)
-    expect( OttInfra::CodeReview.run.find_git_root('/tmp') ).to be nil
-  end
-
-  it ".get_file_attrs returns attributes" do
-    file = 'lib.rb'
-    stub_array = ["#{file}: #{owner_key}: mail@example.com",
-                  "#{file}: #{owner_key}2: mail@example.com\n",
-                  "#{file}: #{owner_key}: mail@example.com\n"\
-                  "#{file}: #{owner_key}: mail2@example.com\n"]
-
-    expected_array = [
-      ['mail@example.com'],
-      [],
-      ['mail@example.com', 'mail2@example.com']
-    ]
-
-    Hash[stub_array.zip(expected_array)].each do |stub, expected|
-      allow_any_instance_of(Git::Lib).to receive(:checkattr)
-                                         .with( file )
-                                         .and_return( stub )
-      expect( OttInfra::CodeReview.run.get_file_attrs(file, :attr => owner_key) ).to eq( expected )
-    end
-  end
-
-  it ".get_reviewers returns reviewers" do
-    stub = {
-      :get_last_changes => ['lib/module.rb','Gemfile','spec/module_spec.rb'],
-      :get_file_attrs   => ['mail@ex.com','mail_2@ex.com','mail@ex.com']
-    }
-    expected_array = ['mail@ex.com','mail_2@ex.com']
-
-    allow_any_instance_of(OttInfra::CodeReview).to receive(:get_last_changes)
-                                   .and_return( stub[:get_last_changes] )
-    Hash[stub[:get_last_changes].zip(stub[:get_file_attrs])].each do |file, reviewer|
-      allow_any_instance_of(OttInfra::CodeReview).to receive(:get_file_attrs)
-                                     .with( file, :attr => 'owner.mail' )
-                                     .and_return( reviewer )
-    end
-
-    expect( OttInfra::CodeReview.run.get_reviewers ).to match_array( expected_array )
-  end
+  commit_id = srand
+  ENV["SENDGRID_USER"] = 'sendgrid_user'
+  ENV["SENDGRID_PASS"] = 'sendgrid_pass'
+  ENV["SENDGRID_FROM"] = 'sendgrid_from'
 
   it ".get_review_info returns all git data" do
     stub = {
-      :get_last_changes => ['lib/module.rb'],
-      :get_file_attrs   => ['reviewer@test.com']
+      :get_last_changes => 'lib/module.rb',
+      :reviewers        => 'reviewer@test.com,reviewer@test.com,reviewer2@test.com',
+      :diff_full        => 'Diff_text',
+      :name             => 'Name Surname',
+      :email            => 'author@test.com',
     }
-    allow_any_instance_of(OttInfra::CodeReview).to receive(:get_last_changes)
-                                   .and_return( stub[:get_last_changes] )
-    Hash[stub[:get_last_changes].zip(stub[:get_file_attrs])].each do |file, reviewer|
-      allow_any_instance_of(OttInfra::CodeReview).to receive(:get_file_attrs)
-                                     .with( file, :attr => 'owner.mail' )
-                                     .and_return( reviewer )
-    end
     allow_any_instance_of(Git::Lib).to receive(:diff_full)
-                                       .and_return( "Diff_Text" )
+                                       .and_return( stub[:diff_full] )
     allow_any_instance_of(Git::Author).to receive(:name)
-                                       .and_return( "Name Surname" )
+                                       .and_return( stub[:name] )
     allow_any_instance_of(Git::Author).to receive(:email)
-                                       .and_return( "author@test.com" )
+                                       .and_return( stub[:email] )
+    allow_any_instance_of(Git::Object::Commit).to receive(:objectish)
+                                       .and_return( commit_id )
+    allow_any_instance_of(Git::Diff).to receive(:stats)
+                                       .and_return({:files => {
+                                         stub[:get_last_changes] => "" }})
+    allow_any_instance_of(Git::Lib).to receive(:checkattr)
+      .and_return( "#{stub[:get_last_changes]}: #{owner_key}: #{stub[:reviewers]}\n" )
+
     expected_hash = {
       :author => {
         :name => "Name Surname",
         :email => "author@test.com"
       },
-      :reviewers => ['reviewer@test.com'],
-      :diff => "Diff_Text"
+      :reviewers => ['reviewer@test.com','reviewer2@test.com'],
+      :patch => "/tmp/#{commit_id}.patch"
     }
-    expect( OttInfra::CodeReview.run.get_review_info ).to include( expected_hash )
+    expect( OttInfra::CodeReview.new.get_review_info ).to include( expected_hash )
+  end
+
+  it ".run is correct" do
+    stub = {
+      :get_last_changes => 'lib/module.rb',
+      :reviewers        => 'reviewer@test.com,reviewer@test.com,reviewer2@test.com',
+      :diff_full        => 'Diff_text',
+      :name             => 'Name Surname',
+      :email            => 'author@test.com',
+    }
+    allow_any_instance_of(Git::Lib).to receive(:diff_full)
+                                       .and_return( stub[:diff_full] )
+    allow_any_instance_of(Git::Author).to receive(:name)
+                                       .and_return( stub[:name] )
+    allow_any_instance_of(Git::Author).to receive(:email)
+                                       .and_return( stub[:email] )
+    allow_any_instance_of(Git::Object::Commit).to receive(:objectish)
+                                       .and_return( commit_id )
+    allow_any_instance_of(Git::Diff).to receive(:stats)
+                                       .and_return({:files => {
+                                         stub[:get_last_changes] => "" }})
+    allow_any_instance_of(Git::Lib).to receive(:checkattr)
+      .and_return( "#{stub[:get_last_changes]}: #{owner_key}: #{stub[:reviewers]}\n" )
+
+    expect( OttInfra::CodeReview.run ).not_to be false
+  end
+
+  after(:all) do
+    File.delete("/tmp/#{commit_id}.patch")
   end
 end
