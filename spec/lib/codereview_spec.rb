@@ -1,24 +1,5 @@
 require "spec_helper"
 
-describe Git::Lib do
-  it "Git::Lib.checkattr returns attributes" do
-    file = 'lib'
-    expected_string = `git check-attr -a #{file}`.chomp
-    expect( Git::Lib.new.checkattr( file ) ).to eq(expected_string)
-  end
-end
-
-describe OttInfra::SendMail do
-  ENV["SENDGRID_USER"] = 'sendgrid_user'
-  ENV["SENDGRID_PASS"] = 'sendgrid_pass'
-  ENV["SENDGRID_FROM"] = 'sendgrid_from'
-  it "check config instance variable" do
-    expect( OttInfra::SendMail.new.config.sendgrid.user ).to match( "sendgrid_user" )
-    expect( OttInfra::SendMail.new.config.sendgrid.pass ).to match( "sendgrid_pass" )
-    expect( OttInfra::SendMail.new.config.sendgrid.from ).to match( "sendgrid_from" )
-  end
-end
-
 describe OttInfra::CodeReview do
   owner_key = 'owner.mail'
   commit_id = srand
