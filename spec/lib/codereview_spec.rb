@@ -38,6 +38,7 @@ describe OttInfra::CodeReview do
       :patch => "/tmp/#{commit_id}.patch"
     }
     expect( OttInfra::CodeReview.new.get_review_info ).to include( expected_hash )
+    expect( File.read expected_hash[:patch] ).to match( stub[:diff_full] )
   end
 
   it ".run is correct" do
