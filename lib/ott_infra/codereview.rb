@@ -1,6 +1,6 @@
 require 'ott_infra/codereview/version'
 require 'ott_infra/sendmail'
-require 'ott_infra/git'
+require 'git'
 
 module OttInfra
   class CodeReview
