@@ -4,6 +4,13 @@ Welcome to your new gem! In this directory, you'll find the files you need to be
 
 TODO: Delete this and the text above, and describe your gem
 
+## Code Status
+
+* [![Build Status](https://travis-ci.org/onetwotrip/ott_infra-codereview.svg?branch=master)](https://travis-ci.org/onetwotrip/ott_infra-codereview)
+* [![Code Climate](https://codeclimate.com/github/onetwotrip/ott_infra-codereview/badges/gpa.svg)](https://codeclimate.com/github/onetwotrip/ott_infra-codereview)
+* [![Test Coverage](https://codeclimate.com/github/onetwotrip/ott_infra-codereview/badges/coverage.svg)](https://codeclimate.com/github/onetwotrip/ott_infra-codereview/coverage)
+* [![Issue Count](https://codeclimate.com/github/onetwotrip/ott_infra-codereview/badges/issue_count.svg)](https://codeclimate.com/github/onetwotrip/ott_infra-codereview)
+
 ## Installation
 
 Add this line to your application's Gemfile:
