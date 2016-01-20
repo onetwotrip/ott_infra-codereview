@@ -5,4 +5,4 @@ RSpec::Core::RakeTask.new(:test) do |t|
   t.pattern = Dir.glob('spec/**/*_spec.rb')
   # t.rcov = true
 end
-#task :default => :test
+task :default => :test
