@@ -39,5 +39,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/ott_infra-codereview.
+Bug reports and pull requests are welcome on GitHub at https://github.com/onetwotrip/ott_infra-codereview.
 
