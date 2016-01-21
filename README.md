@@ -14,7 +14,7 @@ Welcome to your new gem! In this directory, you'll find the files you need to be
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ott_infra-codereview'
+gem 'ottinfra-codereview'
 ```
 
 And then execute:
@@ -23,7 +23,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install ott_infra-codereview
+    $ gem install ottinfra-codereview
 
 ## Usage
 
@@ -37,5 +37,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/onetwotrip/ott_infra-codereview.
+Bug reports and pull requests are welcome on GitHub at https://github.com/onetwotrip/ottinfra-codereview.
 

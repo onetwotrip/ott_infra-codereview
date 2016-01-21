@@ -1,10 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'ott_infra/codereview/version'
+require 'ottinfra/codereview/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "ott_infra-codereview"
+  spec.name          = "ottinfra-codereview"
   spec.version       = OttInfra::Codereview::VERSION
   spec.authors       = ["Dmitry Shmelev"]
   spec.email         = ["dmitry.shmelev@onetwotrip.com"]

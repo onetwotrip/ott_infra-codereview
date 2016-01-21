@@ -25,8 +25,8 @@ SimpleCov.start do
     add_filter "/spec/"
 end
 
-require "ott_infra/codereview"
-require "ott_infra/sendmail"
+require "ottinfra/codereview"
+require "ottinfra/sendmail"
 require "git"
 
 RSpec.configure do |config|
