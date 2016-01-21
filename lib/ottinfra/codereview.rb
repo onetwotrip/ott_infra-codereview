@@ -1,5 +1,5 @@
-require 'ott_infra/codereview/version'
-require 'ott_infra/sendmail'
+require 'ottinfra/codereview/version'
+require 'ottinfra/sendmail'
 require 'git'
 
 module OttInfra
