@@ -6,6 +6,7 @@ require 'ottinfra/codereview/version'
 Gem::Specification.new do |spec|
   spec.name          = "ottinfra-codereview"
   spec.version       = OttInfra::Codereview::VERSION
+  spec.licenses      = ['MIT']
   spec.authors       = ["Dmitry Shmelev"]
   spec.email         = ["dmitry.shmelev@onetwotrip.com"]
 

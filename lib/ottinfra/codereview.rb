@@ -13,7 +13,7 @@ module OttInfra
       codereview = self.new
       review = codereview.get_review_info
       unless review[:reviewers].nil?
-        OttInfra::SendMail.new.send(
+        OttInfra::SendMail.new.sendmail(
           review[:reviewers],
           subject: "CodeReview",
           message: "Message",
